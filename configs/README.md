@@ -122,12 +122,75 @@ anomaly_map = results['pixel_maps'][0]
 fig = visualize_anomaly_map(rgb, anomaly_map, save_path="output/anomaly_map.png")
 ```
 
+## 数据集下载与放置 (Dataset Download)
+
+由于各数据集体积较大（合计约 10GB+），**本仓库不直接包含数据集文件**。
+请使用 `scripts/download_datasets.py` 一键下载、解压并整理到仓库约定的目录结构
+（与 [configs/dataset.yaml](./dataset.yaml) 中的 `root` 路径一致）。
+
+### 支持的基准
+
+| 数据集 | 类别数 | 官方链接 | 体积 | 许可 |
+|--------|-------|----------|------|------|
+| **MVTec AD** | 15 | https://www.mydrive.ch/shares/150996/b52ecdcbf521176e9db9c731f2304b27/download/420938113-1629960298/mvtec_anomaly_detection.tar.xz | ~4.9GB | CC BY-NC-SA 4.0 |
+| **VisA** | 12 | https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar | ~2GB | CC BY-NC-SA 4.0 |
+| **BTAD** | 3 | https://avires.dimi.uniud.it/papers/btad/btad.zip | ~1GB | Research only |
+| **MPDD** | 6 | 需官网申请，无匿名直链 | ~1.7GB | Research only |
+
+> 说明：MVTec AD 链接来自官网下载页的整包地址，若失效可用 `--url` 指定镜像；
+> VisA / BTAD 均为官方 S3 / 机构直链；MPDD 官方按网页申请分发，脚本仅提供目录自检与引导。
+
+### 使用
+
+```bash
+# 在项目根目录执行。下载到 datasets/_archives/（已 gitignore），支持断点续传。
+
+# 下载并整理单个数据集
+python -m scripts.download_datasets --dataset mvtec
+python -m scripts.download_datasets --dataset visa
+python -m scripts.download_datasets --dataset btad
+
+# 全部数据集依次处理
+python -m scripts.download_datasets --all
+
+# 指定镜像链接（如官方链接失效）
+python -m scripts.download_datasets --dataset mvtec --url <镜像URL>
+
+# 仅自检本地目录结构（不联网）
+python -m scripts.download_datasets --check
+```
+
+脚本会在**已就绪时自动跳过**下载；压缩包默认保留（便于断点续传 / 重装），
+可用 `--no-keep-archive` 在整理成功后删除。MPDD 需先从官网获取压缩包后执行
+`python -m scripts.download_datasets --dataset mpdd --url <下载链接>`，或手动放置。
+
+### 目标目录结构
+
+脚本整理后的结构与加载器 [models/dataset.py](../models/dataset.py) 的读取口径一致：
+
+```
+datasets/
+├── MVTec AD/                  # mvtec
+│   └── <类别 15>/             # train/good, test/<缺陷>, ground_truth/<缺陷>
+├── visa/VisA/data/VisA_20220922/   # visa（保留官方原始目录树）
+│   ├── <类别 12>/             # Data/Images/{Normal,Anomaly}, Data/Masks/Anomaly
+│   └── split_csv/1cls.csv     # 官方划分文件
+├── BTAD/                      # btad
+│   └── <01|02|03>/            # train/ok, test/{ok,ko}, ground_truth/ko
+└── MPDD/                      # mpdd（手动放置）
+    └── <类别 6>/              # train/good, test/<缺陷>, ground_truth/<缺陷>
+```
+
+每个类别内部与 `configs/dataset.yaml` 的 `train_dir / test_dir / gt_dir` 一一对应。
+
 ## 实验设置
 
 ### 数据集
 
-- **VisA** (主 Benchmark): 12 个工业类别
-- **MVTec AD** (可选): 15 个类别
+- **MVTec AD**: 15 个工业类别
+- **VisA**: 12 个工业类别
+- **BTAD**: 3 个类别
+- **MPDD**: 6 个类别
 
 ### 实验设定
 
