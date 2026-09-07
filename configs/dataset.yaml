@@ -1,0 +1,31 @@
+# configs/dataset.yaml
+mvtec:
+  root: "D:/ECR-AD/datasets/MVTec AD"
+  categories: ["bottle", "cable", "capsule", "hazelnut", "metal_nut", "pill", "screw", "toothbrush", "transistor", "zipper", "carpet", "grid", "leather", "tile", "wood"]
+  train_dir: "train/good"
+  test_dir: "test"
+  gt_dir: "ground_truth"
+  normal_label: "good"
+
+visa:
+  root: "D:/ECR-AD/datasets/visa/VisA/data/VisA_20220922"
+  categories: ["candle", "capsules", "cashew", "chewinggum", "fryum", "macaroni1", "macaroni2", "pcb1", "pcb2", "pcb3", "pcb4", "pipe_fryum"]
+  normal_dir: "Data/Images/Normal"
+  anomaly_dir: "Data/Images/Anomaly"
+  mask_dir: "Data/Masks/Anomaly"
+
+btad:
+  root: "D:/ECR-AD/datasets/BTAD"
+  categories: ["01", "02", "03"]
+  train_dir: "train/ok"
+  test_dir: "test"
+  gt_dir: "ground_truth"
+  normal_label: "ok"
+
+mpdd:
+  root: "D:/ECR-AD/datasets/MPDD"
+  categories: ["bracket_black", "bracket_brown", "bracket_white", "connector", "metal_plate", "tubes"]
+  train_dir: "train/good"
+  test_dir: "test"
+  gt_dir: "ground_truth"
+  normal_label: "good"

@@ -1,0 +1,76 @@
+
+# ECR-AD 2.0 配置文件 - VisA 数据集
+# ================================
+
+# 路径配置
+paths:
+  visa_root: "D:/ECR-AD/datasets/visa/VisA/data/VisA_20220922"
+  annotations_dir: "D:/ECR-AD/datasets/visa/annotations"
+  save_dir: "D:/ECR-AD/results"
+  checkpoint_dir: "D:/ECR-AD/checkpoints"
+
+# 数据集配置
+dataset:
+  name: "VisA"
+  categories:
+    - candle
+    - capsules
+    - cashew
+    - chewinggum
+    - fryum
+    - macaroni1
+    - macaroni2
+    - pcb1
+    - pcb2
+    - pcb3
+    - pcb4
+    - pipe_fryum
+  image_size: 518  # DINOv2 输入尺寸
+  clip_image_size: 224  # CLIP 输入尺寸
+
+# 模型配置
+model:
+  latent_dim: 256
+  lambda_weight: 1.0    # 分歧度放大系数
+  temperature: 1.0      # Router softmax 温度
+  sigma: 1.0            # Visual typicality 温度
+  dropout_rate: 0.25    # Modality dropout rate
+  multi_scale: true
+  prompt_mode: "class_agnostic"  # 或 "class_aware"
+
+# 训练配置 (Projection Head 跨模态对齐)
+training:
+  source_dataset: "ImageNet-1K"  # 或自定义无标签数据集路径
+  batch_size: 32
+  lr: 1e-3
+  warmup_epochs: 5
+  total_epochs: 50
+  temperature_nce: 0.07         # InfoNCE 温度
+  align_weight: 1.0             # 对齐损失权重
+  optimizer: "AdamW"
+  weight_decay: 1e-4
+  amp: true                     # 自动混合精度
+
+# 推理配置
+inference:
+  batch_size: 16
+  anomaly_threshold: "auto"     # 或具体数值
+  refine_map: true              # 是否进行双边滤波细化
+  gaussian_sigma: 5.0           # 高斯模糊核大小
+  bilateral_sigma_spatial: 10.0
+  bilateral_sigma_color: 0.1
+
+# 评估配置
+evaluation:
+  metrics:
+    - "image_auroc"
+    - "pixel_auroc"
+    - "pixel_ap"
+  save_maps: true
+  save_weights: true
+
+# 硬件配置
+hardware:
+  device: "cuda"
+  num_workers: 4
+  pin_memory: true

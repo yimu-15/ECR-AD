@@ -1,0 +1,21 @@
+# ===== 大数据目录（GitHub 单文件<=100MB / 仓库建议<1GB，暂不纳入版本控制）=====
+# 说明：如需入库请用 git-lfs 或 Release 归档方案，先删除对应 ignore 行。
+datasets/
+weights/
+test_features_cache/
+results/
+
+# ===== Python 缓存 =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# ===== IDE / 系统 =====
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ===== 日志 / 临时 =====
+*.log
